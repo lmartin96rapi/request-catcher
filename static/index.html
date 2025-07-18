@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Request Catcher</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        pre { background: #f4f4f4; padding: 1em; border-radius: 5px; }
+        .req { margin-bottom: 2em; border-bottom: 1px solid #ccc; padding-bottom: 1em; }
+    </style>
+</head>
+<body>
+    <h1>Request Catcher</h1>
+    <div id="requests"></div>
+    <script>
+        async function fetchRequests() {
+            const res = await fetch('/requests');
+            const data = await res.json();
+            const container = document.getElementById('requests');
+            container.innerHTML = '';
+            data.forEach(req => {
+                container.innerHTML += `
+                    <div class="req">
+                        <strong>
+                            [${req.timestamp}] ${req.method} <code>${req.path}</code>
+                        </strong><br>
+                        <b>Headers:</b>
+                        <pre>${JSON.stringify(JSON.parse(req.headers), null, 2)}</pre>
+                        <b>Body:</b>
+                        <pre>${req.body}</pre>
+                    </div>
+                `;
+            });
+        }
+        setInterval(fetchRequests, 3000);
+        fetchRequests();
+    </script>
+</body>
+</html> 
